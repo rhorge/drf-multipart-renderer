@@ -1,3 +1,4 @@
+import os
 import tempfile
 
 from django.test import TestCase
@@ -54,7 +55,7 @@ class TestMultiPartRenderer(TestCase):
             tmp.seek(0)  # Go back to the start of the file
 
             # Get the actual filename assigned by the OS
-            filename = tmp.name.split('/')[2]
+            filename = os.path.basename(tmp.name)
             data = {
                 'info': 'test info',
                 'file': tmp
