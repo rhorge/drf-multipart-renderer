@@ -1,0 +1,56 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+
+[project]
+name = "drf-multipart-renderer"
+
+version = "1.0.0"
+
+authors = [{ name="rhorge", email="horgerares@ymail.com" }]
+
+maintainers = [{ name="rhorge", email="horgerares@ymail.com" }]
+
+description = "A multipart (multipart/form-data) renderer for Django Rest Framework"
+
+readme = "README.md"
+
+requires-python = ">=3.6"
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+]
+
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+keywords = [
+    "drf",
+    "django",
+    "django rest framework",
+    "drf renderer",
+    "drf multipart renderer",
+    "drf multipart/form-data renderer",
+    "django rest framework multipart/form-data renderer",
+    "renderer",
+    "multipart renderer",
+    "multipart/form-data renderer"
+]
+
+dependencies = [
+    "Django",
+    "djangorestframework"
+]
+
+
+[project.optional-dependencies]
+dev = [
+    "hatchling"
+]
+
+[project.urls]
+Homepage = "https://github.com/rhorge/drf-multipart-renderer"
+Issues = "https://github.com/rhorge/drf-multipart-renderer/issues"
