@@ -3,14 +3,18 @@ import tempfile
 
 from django.test import TestCase
 from src.drf_multipart_renderer import MultipartRenderer
+from src.drf_multipart_renderer.multipart_renderer import to_bytes
 
 
 class TestMultiPartRenderer(TestCase):
     def setUp(self):
         self.renderer = MultipartRenderer()
         self.media_type = 'multipart/form-data; boundary=BoUnDaRyStRiNg'
+        self.boundary = to_bytes(f'--{self.renderer.boundary}')
+        self.end_boundary = to_bytes(f'--{self.renderer.boundary}--')
 
     def test_render_fields(self):
+
         """Verify basic key-value pairs are rendered correctly."""
         data = {
             'title': [
@@ -22,30 +26,31 @@ class TestMultiPartRenderer(TestCase):
             'description': 'A simple test',
             'number': 33
         }
-        rendered = self.renderer.render(data, self.media_type)
 
         expected_result = b'\r\n'.join((
-            b'--BoUnDaRyStRiNgetpvelarptriznzsespgfmagoxpjpjluxkwqroqgsilzbdfsfgffddg',
+            self.boundary,
             b'Content-Disposition: form-data; name="title"',
             b'',
             b'Test Item',
-            b'--BoUnDaRyStRiNgetpvelarptriznzsespgfmagoxpjpjluxkwqroqgsilzbdfsfgffddg',
+            self.boundary,
             b'Content-Disposition: form-data; name="title"',
             b'Content-Type: application/json',
             b'',
             b'{"a":3,"b":2}',
-            b'--BoUnDaRyStRiNgetpvelarptriznzsespgfmagoxpjpjluxkwqroqgsilzbdfsfgffddg',
+            self.boundary,
             b'Content-Disposition: form-data; name="description"',
             b'',
             b'A simple test',
-            b'--BoUnDaRyStRiNgetpvelarptriznzsespgfmagoxpjpjluxkwqroqgsilzbdfsfgffddg',
+            self.boundary,
             b'Content-Disposition: form-data; name="number"',
             b'Content-Type: application/json',
             b'',
             b'33',
-            b'--BoUnDaRyStRiNgetpvelarptriznzsespgfmagoxpjpjluxkwqroqgsilzbdfsfgffddg--',
+            self.end_boundary,
             b''
         ))
+
+        rendered = self.renderer.render(data, self.media_type, {'response': {'Content-Type': 'multipart/form-data'}})
 
         self.assertEqual(rendered, expected_result)
 
@@ -62,18 +67,20 @@ class TestMultiPartRenderer(TestCase):
             }
 
             expected_result = b'\r\n'.join((
-                b'--BoUnDaRyStRiNgetpvelarptriznzsespgfmagoxpjpjluxkwqroqgsilzbdfsfgffddg',
+                self.boundary,
                 b'Content-Disposition: form-data; name="info"',
                 b'',
                 b'test info',
-                b'--BoUnDaRyStRiNgetpvelarptriznzsespgfmagoxpjpjluxkwqroqgsilzbdfsfgffddg',
+                self.boundary,
                 b'Content-Disposition: form-data; name="file"; filename="' + bytes(filename, 'utf-8') + b'"',
                 b'Content-Type: image/jpeg',
                 b'',
                 b'test image data',
-                b'--BoUnDaRyStRiNgetpvelarptriznzsespgfmagoxpjpjluxkwqroqgsilzbdfsfgffddg--',
+                self.end_boundary,
                 b''
             ))
 
-            rendered = self.renderer.render(data, self.media_type)
+            rendered = self.renderer.render(data, self.media_type,
+                                            {'response': {'Content-Type': 'multipart/form-data'}})
+
             self.assertEqual(rendered, expected_result)

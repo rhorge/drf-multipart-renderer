@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 [project]
 name = "drf-multipart-renderer"
 
-version = "1.0.0"
+version = "1.0.1"
 
 authors = [{ name="rhorge", email="horgerares@ymail.com" }]
 

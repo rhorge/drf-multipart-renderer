@@ -3,7 +3,7 @@ A high-performance multipart (multipart/form-data) renderer for Django Rest Fram
 This package allows you to return complex, nested data structures and binary files in a single multipart response.
 
 ## Highlights
-- **Response renderer**: Suitable as a DRF Response renderer
+- **Response renderer**: Suitable as a DRF Response Renderer
 - **Smart Type Mapping**: Automatically determines Content-Type for different Python objects.
 - **File Support**: Handles file streams and automatically selects MIME types.
 - **JSON Integration**: Serializes primitives and dictionaries as `application/json` parts.
@@ -43,20 +43,20 @@ class MyView(APIView):
 ### Data Type Mapping Logic
 The `MultipartRenderer` automatically determines the `Content-Type` of each part in the response based on the Python type of the dictionary value.
 
-| Python Type                               | Target Content-Type  | Handling Behavior                                                                                                       |
-|:------------------------------------------|:---------------------|:------------------------------------------------------------------------------------------------------------------------|
-| **String** (`str`)                        | `text/plain`         | Encoded as standard UTF-8 text.                                                                                         |
-| **Primitives** (`int`, `float`, `bool`)   | `application/json`   | Serialized as a JSON value.                                                                                             |
-| **Dictionary** (`dict`)                   | `application/json`   | Serialized as a JSON object.                                                                                            |
-| **File** (`io.IOBase`)                    | `guessed/type`       | Uses the file object's content_type if exists, else guesses type from filename; defaults to `application/octet-stream`. |
-| **Iterables** (`list`, `tuple`)           | *Per-element type*   | Flattens the collection into multiple entries using the same key name.                                                  |
-| **None**                                  | `application/json`   | Serialized as `null`.                                                                                                   |
+| Python Type                             | Target Content-Type  | Handling Behavior                                                                                                       |
+|:----------------------------------------|:---------------------|:------------------------------------------------------------------------------------------------------------------------|
+| **String** (`str`)                      | `text/plain`         | Encoded as standard UTF-8 text.                                                                                         |
+| **Primitives** (`int`, `float`, `bool`) | `application/json`   | Serialized as a JSON value.                                                                                             |
+| **Dictionary** (`dict`)                 | `application/json`   | Serialized as a JSON object.                                                                                            |
+| **File** (`has a callable read method`) | `guessed/type`       | Uses the file object's content_type if exists, else guesses type from filename; defaults to `application/octet-stream`. |
+| **Iterables** (`list`, `tuple`)         | *Per-element type*   | Flattens the collection into multiple entries using the same key name.                                                  |
+| **None**                                | `application/json`   | Serialized as `null`.                                                                                                   |
 
 ### Nested Collection Note
 If an iterable (like a list) contains another collection (like a list of lists or a list of dicts), the nested collection is automatically serialized as a JSON string within that form entry.
 
 ### Technical Details
-The renderer uses a custom boundary string: `BoUnDaRyStRiNgetpvelarptriznzsespgfmagoxpjpjluxkwqroqgsilzbdfsfgffddg`
+The renderer generates a random boundary for every response.
 
 It adheres to standard multipart formatting, using `\r\n` line endings as required by the HTTP specification.
 

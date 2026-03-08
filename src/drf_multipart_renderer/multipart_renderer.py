@@ -1,5 +1,6 @@
 import mimetypes
 import os
+import uuid
 from collections.abc import Iterable
 from django.utils.encoding import force_bytes
 from rest_framework.renderers import BaseRenderer, JSONRenderer
@@ -44,10 +45,17 @@ class MultipartRenderer(BaseRenderer):
         # Results in a body with 5 parts:
         # 1 plain text, 1 JSON object, 1 binary file, and 2 'tags' text entries.
     """
-    boundary = 'BoUnDaRyStRiNgetpvelarptriznzsespgfmagoxpjpjluxkwqroqgsilzbdfsfgffddg'
+    boundary = None
     media_type = 'multipart/form-data'
     format = 'multipart'
     charset = f'utf-8; boundary={boundary}'
+
+
+    def __init__(self, *args, **kwargs):
+        super(*args, **kwargs)
+        self.boundary = f'BoUnDaRyStRiNgDRFMultipartRenderer{uuid.uuid4().hex}'
+        self.charset = f'utf-8; boundary={self.boundary}'
+
 
     def encode_str(self, lines, key, val):
         lines.extend(
